@@ -1,0 +1,26 @@
+{
+  "name": "hebrew-literacy-cards",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Hybrid (printed QR cards + digital games) early Hebrew literacy app for young children",
+  "scripts": {
+    "dev": "vite",
+    "dev:https": "HTTPS=1 vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "html5-qrcode": "^2.3.8",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@vitejs/plugin-basic-ssl": "^2.0.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "tailwindcss": "^4.1.0",
+    "vite": "^8.0.0"
+  }
+}

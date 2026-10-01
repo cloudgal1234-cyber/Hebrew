@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --font-ui: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  --font-heb: "Noto Sans Hebrew", "Rubik", "Arial Hebrew", sans-serif;
+  --animate-pop: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-wiggle: wiggle 0.5s ease-in-out;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-scanline: scanline 2s linear infinite;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.2) rotate(-10deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+@keyframes wiggle {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes scanline {
+  0% { top: 4%; }
+  50% { top: 92%; }
+  100% { top: 4%; }
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.8; }
+}
+
+html, body, #root { min-height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  background: linear-gradient(160deg, #fef3c7 0%, #fce7f3 45%, #dbeafe 100%);
+  background-attachment: fixed;
+  color: #1e1b4b;
+  -webkit-tap-highlight-color: transparent;
+}
+.font-heb { font-family: var(--font-heb); }
+button { cursor: pointer; touch-action: manipulation; }
+
+/* ---------- Printing ---------- */
+@page { size: A4 portrait; margin: 0; }
+@media print {
+  body { background: white !important; }
+  .print-sheet {
+    width: 210mm;
+    height: 297mm;
+    padding: 48.5mm 5mm; /* centres two 100mm rows vertically */
+    box-sizing: border-box;
+    page-break-after: always;
+    break-after: page;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+  .print-sheet:last-child { page-break-after: auto; break-after: auto; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
