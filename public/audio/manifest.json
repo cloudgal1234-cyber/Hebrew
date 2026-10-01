@@ -1,4 +1,0 @@
-{
-  "_comment": "Optional recorded audio overrides. Map a clip key to a file in /public/audio. Keys: 'letter-<id>', 'word-<id>', 'syl-<id>-<vowel>', or any exact Hebrew text. Unlisted items fall back to the browser's Hebrew text-to-speech.",
-  "clips": {}
-}

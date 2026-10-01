@@ -1,46 +1,65 @@
-import { Suspense, lazy, useEffect } from 'react'
-import { navigate, useRoute } from './lib/router'
-import { stop } from './lib/speech'
-import HomePage from './pages/HomePage'
-import PrintCardsPage from './pages/PrintCardsPage'
-import CardManagerPage from './pages/CardManagerPage'
-import { AssemblyPage, CatcherPage, StoryPage, TracePage } from './pages/GamePages'
-
-// The QR library is large; only load it when the scanner is opened.
-const ScannerPage = lazy(() => import('./pages/ScannerPage'))
-
-const ROUTES = {
-  '/': HomePage,
-  '/scan': ScannerPage,
-  '/print': PrintCardsPage,
-  '/cards': CardManagerPage,
-  '/catch': CatcherPage,
-  '/trace': TracePage,
-  '/build': AssemblyPage,
-  '/stories': StoryPage,
-}
+import { useEffect, useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import { LEVELS } from './data/words.js'
+import { loadProgress, saveProgress, resetProgress } from './lib/storage.js'
+import { stopSpeech } from './lib/speech.js'
+import HomeScreen from './components/HomeScreen.jsx'
+import GameScreen from './components/GameScreen.jsx'
 
 export default function App() {
-  const { path, params } = useRoute()
-  const Page = ROUTES[path] ?? HomePage
+  const [progress, setProgress] = useState(loadProgress)
+  const [levelId, setLevelId] = useState(null)
+  const [run, setRun] = useState(0)
 
-  // Silence any speech when switching screens.
-  useEffect(() => stop, [path])
+  useEffect(() => saveProgress(progress), [progress])
+
+  const level = LEVELS.find((l) => l.id === levelId)
+
+  function wordDone(wordId, points) {
+    setProgress((p) => ({
+      ...p,
+      score: p.score + points,
+      completedWords: p.completedWords.includes(wordId) ? p.completedWords : [...p.completedWords, wordId],
+    }))
+  }
+
+  function levelDone(id, stars) {
+    setProgress((p) => ({
+      ...p,
+      stars: p.stars + stars,
+      unlocked: Math.max(p.unlocked, Math.min(id + 1, LEVELS.length)),
+      levelStars: { ...p.levelStars, [id]: Math.max(p.levelStars[id] ?? 0, stars) },
+    }))
+  }
+
+  function go(id) {
+    stopSpeech()
+    setLevelId(id)
+  }
 
   return (
-    <div className="mx-auto min-h-screen max-w-6xl px-3 py-4 sm:px-6 print:max-w-none print:p-0">
-      {path !== '/' && (
-        <button
-          onClick={() => navigate('/')}
-          className="fixed bottom-4 left-4 z-40 rounded-full bg-white p-3 text-3xl shadow-xl hover:scale-110 print:hidden"
-          aria-label="מסך הבית"
-        >
-          🏠
-        </button>
-      )}
-      <Suspense fallback={<div className="animate-float pt-20 text-center text-7xl">🦉</div>}>
-        <Page params={params} />
-      </Suspense>
+    <div className="h-dvh w-full overflow-hidden">
+      <AnimatePresence mode="wait">
+        {level ? (
+          <GameScreen
+            key={`level-${level.id}-${run}`}
+            level={level}
+            progress={progress}
+            onWordDone={wordDone}
+            onLevelDone={levelDone}
+            onNext={() => go(LEVELS.find((l) => l.id === level.id + 1)?.id ?? null)}
+            onReplay={() => (stopSpeech(), setRun((r) => r + 1))}
+            onExit={() => go(null)}
+          />
+        ) : (
+          <HomeScreen
+            key="home"
+            progress={progress}
+            onPlay={go}
+            onReset={() => setProgress(resetProgress())}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -3,61 +3,54 @@
 @theme {
   --font-ui: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
   --font-heb: "Noto Sans Hebrew", "Rubik", "Arial Hebrew", sans-serif;
-  --animate-pop: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  --animate-wiggle: wiggle 0.5s ease-in-out;
-  --animate-float: float 3s ease-in-out infinite;
-  --animate-scanline: scanline 2s linear infinite;
 }
 
-@keyframes pop {
-  0% { transform: scale(0.2) rotate(-10deg); opacity: 0; }
-  100% { transform: scale(1) rotate(0); opacity: 1; }
-}
-@keyframes wiggle {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-10px); }
-  40%, 80% { transform: translateX(10px); }
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-@keyframes scanline {
-  0% { top: 4%; }
-  50% { top: 92%; }
-  100% { top: 4%; }
-}
-@keyframes confetti-fall {
-  0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.8; }
-}
-
-html, body, #root { min-height: 100%; }
-body {
-  margin: 0;
-  font-family: var(--font-ui);
-  background: linear-gradient(160deg, #fef3c7 0%, #fce7f3 45%, #dbeafe 100%);
-  background-attachment: fixed;
-  color: #1e1b4b;
-  -webkit-tap-highlight-color: transparent;
-}
-.font-heb { font-family: var(--font-heb); }
-button { cursor: pointer; touch-action: manipulation; }
-
-/* ---------- Printing ---------- */
-@page { size: A4 portrait; margin: 0; }
-@media print {
-  body { background: white !important; }
-  .print-sheet {
-    width: 210mm;
-    height: 297mm;
-    padding: 48.5mm 5mm; /* centres two 100mm rows vertically */
-    box-sizing: border-box;
-    page-break-after: always;
-    break-after: page;
-    box-shadow: none !important;
-    margin: 0 !important;
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    margin: 0;
+    font-family: var(--font-ui);
+    background: #1e1b4b;
+    color: #1e1b4b;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
-  .print-sheet:last-child { page-break-after: auto; break-after: auto; }
-  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .font-heb { font-family: var(--font-heb); }
+  button { cursor: pointer; touch-action: manipulation; font: inherit; }
+}
+
+/* Moving conveyor-belt stripes */
+@keyframes belt { from { background-position-x: 0; } to { background-position-x: 48px; } }
+.belt {
+  background: repeating-linear-gradient(90deg, #475569 0 22px, #334155 22px 24px, #64748b 24px 46px, #334155 46px 48px);
+  animation: belt 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin-slow { animation: spin 14s linear infinite; }
+.spin-wheel { animation: spin 1.2s linear infinite; }
+.spin-rev { animation: spin 10s linear infinite reverse; }
+
+/* Glossy soap bubble */
+.bubble {
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95) 0 9%, rgba(255,255,255,0) 18%),
+    radial-gradient(circle at 50% 55%, var(--b1) 0%, var(--b2) 70%, var(--b3) 100%);
+  box-shadow: inset -6px -10px 18px rgba(0,0,0,0.12), inset 6px 6px 14px rgba(255,255,255,0.5), 0 8px 18px rgba(30,27,75,0.25);
+  border: 3px solid rgba(255,255,255,0.75);
+}
+
+.factory-bg {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.18) 0 2px, transparent 3px) 0 0/46px 46px,
+    linear-gradient(180deg, #7c3aed 0%, #a855f7 45%, #f0abfc 100%);
+}
+
+.chute {
+  background: linear-gradient(90deg, #94a3b8, #e2e8f0 35%, #cbd5e1 60%, #64748b);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .belt, .spin-slow, .spin-wheel, .spin-rev { animation: none; }
 }
