@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 /**
  * The bottom conveyor belt carrying the current word box:
- * picture + word with one empty slot.
+ * picture + an empty slot for its word.
  */
 const ConveyorBelt = forwardRef(function ConveyorBelt({ word, filled, hintPulse, onSayWord, onSlotTap }, slotRef) {
   return (
@@ -31,46 +31,31 @@ const ConveyorBelt = forwardRef(function ConveyorBelt({ word, filled, hintPulse,
             </motion.button>
 
             <div className="flex flex-col items-center gap-1">
-              <div className="font-heb flex items-center gap-1 text-[clamp(2.4rem,9vw,4.5rem)] font-black leading-none text-indigo-950">
-                {word.parts.map((part, i) =>
-                  i === word.miss ? (
-                    <motion.button
-                      key={i}
-                      ref={slotRef}
-                      type="button"
-                      onClick={onSlotTap}
-                      aria-label="הַצְּלִיל הֶחָסֵר"
-                      animate={hintPulse && !filled ? { scale: [1, 1.12, 1] } : { scale: 1 }}
-                      transition={{ duration: 0.6, repeat: hintPulse && !filled ? 2 : 0 }}
-                      className={`flex min-w-[1.6em] items-center justify-center rounded-2xl px-1 py-1 ${
-                        filled ? 'bg-emerald-300/70' : 'border-4 border-dashed border-violet-500 bg-white/70'
-                      }`}
-                    >
-                      {filled ? (
-                        <motion.span
-                          initial={{ scale: 0.3 }}
-                          animate={{ scale: [1.5, 1] }}
-                          transition={{ type: 'spring', bounce: 0.6 }}
-                        >
-                          {part}
-                        </motion.span>
-                      ) : (
-                        <motion.span
-                          className="text-violet-400"
-                          animate={{ opacity: [0.3, 1, 0.3] }}
-                          transition={{ duration: 1.4, repeat: Infinity }}
-                        >
-                          ?
-                        </motion.span>
-                      )}
-                    </motion.button>
-                  ) : (
-                    <span key={i} className="px-0.5">
-                      {part}
-                    </span>
-                  ),
+              <motion.button
+                ref={slotRef}
+                type="button"
+                onClick={onSlotTap}
+                aria-label="הַמִּלָּה הַחֲסֵרָה"
+                animate={hintPulse && !filled ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+                transition={{ duration: 0.6, repeat: hintPulse && !filled ? 2 : 0 }}
+                className={`font-heb flex h-[1.5em] min-w-[3.2em] items-center justify-center rounded-2xl px-3 text-[clamp(2.2rem,8vw,4rem)] font-black leading-none text-indigo-950 ${
+                  filled ? 'bg-emerald-300/70' : 'border-4 border-dashed border-violet-500 bg-white/70'
+                }`}
+              >
+                {filled ? (
+                  <motion.span initial={{ scale: 0.3 }} animate={{ scale: [1.4, 1] }} transition={{ type: 'spring', bounce: 0.6 }}>
+                    {word.word}
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    className="text-violet-400"
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 1.4, repeat: Infinity }}
+                  >
+                    ?
+                  </motion.span>
                 )}
-              </div>
+              </motion.button>
               <button
                 type="button"
                 onClick={onSayWord}

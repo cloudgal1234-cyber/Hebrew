@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { animate, motion, useMotionValue } from 'framer-motion'
 
-export const CHUTES = 4
+export const CHUTES = 3
 const COLORS = [
   ['#fef9c3', '#fde047', '#f59e0b'],
   ['#fce7f3', '#f9a8d4', '#ec4899'],
@@ -10,7 +10,7 @@ const COLORS = [
 ]
 
 /**
- * A phonics bubble dropping out of a chute. Falls to `floor`, then pops.
+ * A word bubble dropping out of a chute. Falls to `floor`, then pops.
  * `bubble.state` switches it to the "wrong" float-away or hides it once caught.
  */
 export default function Bubble({ bubble, floor, fall, glow, onTap, onGone }) {
@@ -51,26 +51,26 @@ export default function Bubble({ bubble, floor, fall, glow, onTap, onGone }) {
 
   return (
     <div
-      className="absolute top-0 z-10"
+      className="absolute top-0 z-10 -translate-x-1/2"
       style={{ left: `${((bubble.chute + 0.5) / CHUTES) * 100}%`, visibility: bubble.state === 'caught' ? 'hidden' : 'visible' }}
     >
       <motion.button
         ref={el}
         type="button"
-        aria-label={bubble.syl.text}
+        aria-label={bubble.item.word}
         onPointerDown={(e) => {
           e.preventDefault()
           if (bubble.state === 'falling') onTap(bubble, el.current.getBoundingClientRect())
         }}
         style={{ x, y, scale, opacity, '--b1': b1, '--b2': b2, '--b3': b3 }}
-        className="bubble font-heb -ml-[calc(var(--bs)/2)] flex size-(--bs) items-center justify-center rounded-full text-[length:calc(var(--bs)*0.42)] font-black text-indigo-950 [--bs:clamp(4.5rem,15vw,7rem)]"
+        className="bubble font-heb flex h-[clamp(4.5rem,13vh,6.5rem)] min-w-[clamp(6.5rem,28vw,11rem)] items-center justify-center whitespace-nowrap rounded-full px-4 text-[clamp(1.9rem,7vw,3rem)] font-black text-indigo-950"
       >
         <motion.span
-          animate={{ rotate: [-6, 6, -6] }}
+          animate={{ rotate: [-3, 3, -3] }}
           transition={{ duration: 2 + (bubble.id % 3) * 0.4, repeat: Infinity, ease: 'easeInOut' }}
           className="pointer-events-none leading-none"
         >
-          {bubble.syl.text}
+          {bubble.item.word}
         </motion.span>
         {glow && (
           <motion.span

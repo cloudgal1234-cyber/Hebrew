@@ -44,9 +44,6 @@ export async function speakAll(parts) {
   }
 }
 
-/** A phonics syllable, slow and clear. */
-export const speakSyllable = (syl) => speak(syl.say, { rate: 0.6 })
-
 export function hasHebrewVoice() {
   return !!hebrewVoice()
 }

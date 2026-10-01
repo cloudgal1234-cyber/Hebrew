@@ -4,7 +4,7 @@ import { LEVELS } from '../data/words.js'
 import { hasHebrewVoice, speak } from '../lib/speech.js'
 import { sfx } from '../lib/sfx.js'
 
-const FLOATERS = ['בָּ', 'מוּ', 'לִי', 'סוֹ', 'תֵ', 'נָ', 'דוּ', 'פִּי']
+const FLOATERS = ['דָּג', 'סוּס', 'לֵב', 'פִּיל', 'עֵץ', 'נֵר', 'דּוֹב', 'תּוּת']
 
 export default function HomeScreen({ progress, onPlay, onReset }) {
   const [voiceMissing, setVoiceMissing] = useState(false)
@@ -29,11 +29,11 @@ export default function HomeScreen({ progress, onPlay, onReset }) {
       exit={{ opacity: 0, scale: 0.96 }}
       className="factory-bg relative flex h-full flex-col items-center overflow-y-auto px-4 pb-8 pt-[max(1rem,env(safe-area-inset-top))]"
     >
-      {/* Drifting syllable bubbles in the background */}
+      {/* Drifting word bubbles in the background */}
       {FLOATERS.map((s, i) => (
         <motion.div
           key={s}
-          className="bubble font-heb pointer-events-none absolute flex size-14 items-center justify-center rounded-full text-2xl font-bold opacity-60"
+          className="bubble font-heb pointer-events-none absolute flex h-14 min-w-20 items-center justify-center rounded-full px-3 text-2xl font-bold opacity-60"
           style={{ '--b1': '#fef9c3', '--b2': '#f9a8d4', '--b3': '#c084fc', left: `${8 + ((i * 12) % 84)}%` }}
           initial={{ y: '110vh' }}
           animate={{ y: '-20vh', x: [0, 14, -14, 0] }}
@@ -76,7 +76,7 @@ export default function HomeScreen({ progress, onPlay, onReset }) {
           הַמְּעוֹפְפוֹת
         </h1>
         <p className="mt-3 text-lg font-semibold text-white/95 sm:text-xl">
-          תּוֹפְסִים בּוּעוֹת שֶׁל צְלִילִים וּבוֹנִים מִלִּים!
+          קוֹרְאִים מִלִּים וְתוֹפְסִים אוֹתָן בַּבּוּעוֹת!
         </p>
       </motion.div>
 

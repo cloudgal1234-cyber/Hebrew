@@ -1,21 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { distractors, targetSyllable } from '../data/words.js'
-import { speak, speakAll, speakSyllable, stopSpeech } from '../lib/speech.js'
+import { distractors } from '../data/words.js'
+import { speak, speakAll, stopSpeech } from '../lib/speech.js'
 import { sfx } from '../lib/sfx.js'
 import Bubble, { CHUTES } from './Bubble.jsx'
 import ConveyorBelt from './ConveyorBelt.jsx'
 import Celebration, { randomCheer } from './Celebration.jsx'
-import TracingGame from './TracingGame.jsx'
+import MatchGame from './MatchGame.jsx'
 import LevelComplete from './LevelComplete.jsx'
 
-const SPAWN_MS = 1500
-const MAX_BUBBLES = 5
+const SPAWN_MS = 1800
+const MAX_BUBBLES = 4
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 export default function GameScreen({ level, progress, onWordDone, onLevelDone, onNext, onReplay, onExit }) {
   const [wordIndex, setWordIndex] = useState(0)
-  const [phase, setPhase] = useState('play') // play | caught | trace | done
+  const [phase, setPhase] = useState('play') // play | caught | match | done
   const [bubbles, setBubbles] = useState([])
   const [filled, setFilled] = useState(false)
   const [flyer, setFlyer] = useState(null)
@@ -23,11 +23,11 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
   const [mistakes, setMistakes] = useState(0)
   const [hintPulse, setHintPulse] = useState(0)
   const [levelScore, setLevelScore] = useState(0)
-  const [traceStars, setTraceStars] = useState(0)
+  const [bonusStars, setBonusStars] = useState(0)
   const [floor, setFloor] = useState(0)
 
   const word = level.words[wordIndex]
-  const target = useMemo(() => targetSyllable(word), [word])
+  const target = word
   const wrongOnes = useMemo(() => distractors(word), [word])
 
   const arenaRef = useRef(null)
@@ -58,23 +58,23 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
     setMistakes(0)
     setBubbles([])
     sinceCorrect.current = 0
-    const t = setTimeout(() => speakAll([word.word, 'אֵיזֶה צְלִיל חָסֵר?']), 700)
+    const t = setTimeout(() => speakAll(['חַפְּשׂוּ אֶת הַמִּלָּה', [word.word, { rate: 0.75 }]]), 700)
     return () => clearTimeout(t)
   }, [word])
 
-  // Bubble factory: keeps dropping bubbles; the right sound shows up often
+  // Bubble factory: keeps dropping word bubbles; the right word shows up often
   useEffect(() => {
     if (phase !== 'play' || !floor) return
     const spawn = () => {
       if (bubblesRef.current.filter((b) => b.state === 'falling').length >= MAX_BUBBLES) return
       const giveCorrect = sinceCorrect.current >= 2 || Math.random() < 0.3
       sinceCorrect.current = giveCorrect ? 0 : sinceCorrect.current + 1
-      const syl = giveCorrect ? target : wrongOnes[Math.floor(Math.random() * wrongOnes.length)]
+      const item = giveCorrect ? target : wrongOnes[Math.floor(Math.random() * wrongOnes.length)]
       let chute
       do chute = Math.floor(Math.random() * CHUTES)
       while (chute === lastChute.current)
       lastChute.current = chute
-      const bubble = { id: nextId.current++, syl, chute, state: 'falling' }
+      const bubble = { id: nextId.current++, item, chute, state: 'falling' }
       setBubbles((bs) => [...bs, bubble])
     }
     const first = setTimeout(spawn, 400)
@@ -87,14 +87,14 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
   async function handleTap(bubble, rect) {
     if (phase !== 'play') return
     sfx.pop()
-    if (bubble.syl.key === target.key) {
+    if (bubble.item.id === target.id) {
       // Correct: fly into the slot
       setPhase('caught')
       sfx.whoosh()
-      speakSyllable(bubble.syl)
+      speak(bubble.item.word, { rate: 0.75 })
       const to = slotRef.current?.getBoundingClientRect()
       setBubbles((bs) => bs.map((b) => (b.id === bubble.id ? { ...b, state: 'caught' } : b.state === 'falling' ? { ...b, state: 'wrong' } : b)))
-      setFlyer({ syl: bubble.syl, from: rect, to })
+      setFlyer({ item: bubble.item, from: rect, to })
     } else {
       // Wrong: soft bounce, float away, helpful hint
       sfx.bounce()
@@ -102,9 +102,9 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
       setHintPulse((n) => n + 1)
       setBubbles((bs) => bs.map((b) => (b.id === bubble.id ? { ...b, state: 'wrong' } : b)))
       await speakAll([
-        [bubble.syl.say, { rate: 0.6 }],
-        'אֲנַחְנוּ צְרִיכִים אֶת הַצְּלִיל',
-        [target.say, { rate: 0.6 }],
+        [bubble.item.word, { rate: 0.75 }],
+        'זֹאת לֹא הַמִּלָּה. חַפְּשׂוּ אֶת',
+        [target.word, { rate: 0.75 }],
       ])
     }
   }
@@ -121,8 +121,7 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
     onWordDone(word.id, points)
     const c = randomCheer()
     setCheer(c)
-    await sleep(350)
-    await speak(word.word, { rate: 0.75 })
+    await sleep(900)
     await speak(c)
     await sleep(600)
     if (!alive.current) return
@@ -131,19 +130,19 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
       setWordIndex(wordIndex + 1)
       setPhase('play')
     } else {
-      setPhase('trace')
+      setPhase('match')
     }
   }
 
-  function traced(stars) {
-    setTraceStars(stars)
+  function matched(stars) {
+    setBonusStars(stars)
     onLevelDone(level.id, stars)
     setPhase('done')
     sfx.fanfare()
   }
 
   const sayWord = () => speak(word.word, { rate: 0.75 })
-  const sayHint = () => speakAll([word.word, 'חָסֵר הַצְּלִיל', [target.say, { rate: 0.6 }]])
+  const sayHint = () => speakAll(['חַפְּשׂוּ אֶת הַמִּלָּה', [word.word, { rate: 0.7 }]])
 
   return (
     <motion.main
@@ -172,7 +171,7 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
                 animate={{ scale: i === wordIndex && phase === 'play' ? [1, 1.25, 1] : 1 }}
                 transition={{ duration: 1, repeat: i === wordIndex ? Infinity : 0 }}
                 className={`flex size-8 items-center justify-center rounded-full text-lg ${
-                  i < wordIndex || (i === wordIndex && filled) || phase === 'trace' || phase === 'done'
+                  i < wordIndex || (i === wordIndex && filled) || phase === 'match' || phase === 'done'
                     ? 'bg-emerald-400'
                     : i === wordIndex
                       ? 'bg-amber-300'
@@ -182,8 +181,8 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
                 {i < wordIndex || (i === wordIndex && filled) ? w.emoji : '❓'}
               </motion.span>
             ))}
-            <span className={`flex size-8 items-center justify-center rounded-full text-lg ${phase === 'trace' ? 'bg-amber-300' : 'bg-white/20'}`}>
-              ✏️
+            <span className={`flex size-8 items-center justify-center rounded-full text-lg ${phase === 'match' ? 'bg-amber-300' : 'bg-white/20'}`}>
+              🧩
             </span>
           </div>
         </div>
@@ -213,7 +212,7 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
               bubble={b}
               floor={floor}
               fall={level.fall}
-              glow={mistakes >= 3 && b.syl.key === target.key}
+              glow={mistakes >= 3 && b.item.id === target.id}
               onTap={handleTap}
               onGone={removeBubble}
             />
@@ -239,13 +238,13 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
       {/* Bubble flying into the slot */}
       {flyer && flyer.to && (
         <motion.div
-          className="bubble font-heb pointer-events-none fixed z-50 flex items-center justify-center rounded-full font-black text-indigo-950"
+          className="bubble font-heb pointer-events-none fixed z-50 flex items-center justify-center rounded-full font-black whitespace-nowrap text-indigo-950"
           style={{
             left: flyer.from.left,
             top: flyer.from.top,
             width: flyer.from.width,
             height: flyer.from.height,
-            fontSize: flyer.from.height * 0.42,
+            fontSize: flyer.from.height * 0.4,
             '--b1': '#fef9c3',
             '--b2': '#fde047',
             '--b3': '#f59e0b',
@@ -254,13 +253,13 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
           animate={{
             x: [0, (flyer.to.left + flyer.to.width / 2 - (flyer.from.left + flyer.from.width / 2)) * 0.5, flyer.to.left + flyer.to.width / 2 - (flyer.from.left + flyer.from.width / 2)],
             y: [0, -80, flyer.to.top + flyer.to.height / 2 - (flyer.from.top + flyer.from.height / 2)],
-            scale: [1, 1.4, 0.8],
-            rotate: [0, 180, 360],
+            scale: [1, 1.3, 0.9],
+            rotate: [0, -10, 0],
           }}
           transition={{ duration: 0.85, ease: 'easeInOut' }}
           onAnimationComplete={landed}
         >
-          {flyer.syl.text}
+          {flyer.item.word}
         </motion.div>
       )}
       {/* Slot not measurable (should not happen) – land immediately */}
@@ -269,7 +268,7 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
       <AnimatePresence>{cheer && <Celebration key={`cheer-${word.id}`} cheer={cheer} />}</AnimatePresence>
 
       <AnimatePresence>
-        {phase === 'trace' && <TracingGame key="trace" letter={level.trace} onDone={traced} />}
+        {phase === 'match' && <MatchGame key="match" words={level.words} onDone={matched} />}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -277,7 +276,7 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
           <LevelComplete
             key="done"
             level={level}
-            stars={traceStars}
+            stars={bonusStars}
             score={levelScore}
             onNext={onNext}
             onReplay={onReplay}
