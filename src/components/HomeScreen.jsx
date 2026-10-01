@@ -97,7 +97,7 @@ export default function HomeScreen({ progress, onPlay, onReset }) {
               onClick={() => start(level)}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.15 + i * 0.05, type: 'spring', bounce: 0.5 }}
+              transition={{ delay: 0.15 + Math.min(i, 10) * 0.05, type: 'spring', bounce: 0.5 }}
               whileHover={locked ? undefined : { scale: 1.05, rotate: -1 }}
               whileTap={locked ? undefined : { scale: 0.92 }}
               className="flex min-h-36 flex-col items-center justify-between rounded-3xl border-4 border-white/80 p-3 text-center shadow-lg disabled:cursor-not-allowed"

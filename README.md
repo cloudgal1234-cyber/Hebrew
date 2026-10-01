@@ -13,7 +13,7 @@ The game practises reading **whole words**.
    **Wrong bubble.** A soft bounce sound, the bubble floats away, and a spoken hint plays: "that's not the word, look for …". After 3 mistakes the right bubbles glow.
    The wrong words are chosen to look similar (same first letter, shared letters, similar length), so the child has to really read.
 5. **Bonus round.** After 3 words, the child matches each word card to its picture. Fewer mistakes earn more ⭐ (1–3).
-6. Finishing a level unlocks the next one. There are 10 levels and 30 words.
+6. Finishing a level unlocks the next one. There are 53 levels and 159 words, from short words (דָּג) up to long ones (צְפַרְדֵּעַ, אוֹפַנַּיִם).
 
 Progress (stars, points, unlocked levels, completed words) is saved in `localStorage`.
 
