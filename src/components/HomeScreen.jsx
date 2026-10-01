@@ -6,7 +6,7 @@ import { sfx } from '../lib/sfx.js'
 
 const FLOATERS = ['דָּג', 'סוּס', 'לֵב', 'פִּיל', 'עֵץ', 'נֵר', 'דּוֹב', 'תּוּת']
 
-export default function HomeScreen({ progress, onPlay, onReset }) {
+export default function HomeScreen({ progress, onPlay, onNikud, onReset }) {
   const [voiceMissing, setVoiceMissing] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
 
@@ -79,6 +79,21 @@ export default function HomeScreen({ progress, onPlay, onReset }) {
           קוֹרְאִים מִלִּים וְתוֹפְסִים אוֹתָן בַּבּוּעוֹת!
         </p>
       </motion.div>
+
+      <motion.button
+        onClick={() => (sfx.unlock(), sfx.pop(), speak('לוֹמְדִים נִקּוּד'), onNikud())}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.2, type: 'spring', bounce: 0.5 }}
+        whileTap={{ scale: 0.94 }}
+        className="relative z-10 mt-5 flex w-full max-w-md items-center justify-center gap-3 rounded-3xl border-4 border-white bg-gradient-to-l from-amber-300 to-pink-300 px-5 py-3 shadow-xl"
+      >
+        <span className="font-heb text-4xl font-black text-indigo-950">אָ אֵ אִי</span>
+        <span className="flex flex-col items-start">
+          <span className="font-heb text-2xl font-black text-indigo-950">לוֹמְדִים נִקּוּד</span>
+          <span className="text-sm font-semibold text-indigo-900">קָמָץ, צֵירֵה, חִירִיק, חוֹלָם, שׁוּרוּק…</span>
+        </span>
+      </motion.button>
 
       {voiceMissing && (
         <div className="relative z-10 mt-4 max-w-xl rounded-2xl bg-amber-100 px-4 py-3 text-center text-sm font-semibold text-amber-900 shadow">

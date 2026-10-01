@@ -2,7 +2,7 @@
 
 const KEY = 'flying-word-factory:v1'
 
-const EMPTY = { stars: 0, score: 0, unlocked: 1, levelStars: {}, completedWords: [] }
+const EMPTY = { stars: 0, score: 0, unlocked: 1, levelStars: {}, completedWords: [], nikudStars: {} }
 
 export function loadProgress() {
   try {

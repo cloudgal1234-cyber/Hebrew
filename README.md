@@ -15,7 +15,16 @@ The game practises reading **whole words**.
 5. **Bonus round.** After 3 words, the child matches each word card to its picture. Fewer mistakes earn more ⭐ (1–3).
 6. Finishing a level unlocks the next one. There are 53 levels and 159 words, from short words (דָּג) up to long ones (צְפַרְדֵּעַ, אוֹפַנַּיִם).
 
-Progress (stars, points, unlocked levels, completed words) is saved in `localStorage`.
+### Learning nikud (לוֹמְדִים נִקּוּד)
+
+A separate section on the home screen teaches the vowel signs, one lesson per sound: קָמָץ and פַּתָּח (אָ), צֵירֵה and סֶגּוֹל (אֶ), חִירִיק (אִי), חוֹלָם (אוֹ), שׁוּרוּק and קֻבּוּץ (אוּ), שְׁוָא, plus a mixed review. Each lesson has four steps:
+
+1. **Meet the sign:** what it looks like and what it says.
+2. **Letters:** the sign on 6 letters, each read aloud.
+3. **Words:** words from the game whose first syllable has the sign.
+4. **Listening game:** hear a syllable and pick it from 3 bubbles with the same letter and different vowels. 1–3 ⭐.
+
+Progress (stars, points, unlocked levels, completed words, nikud stars) is saved in `localStorage`.
 
 ## Tech
 
@@ -35,3 +44,4 @@ npm run build    # static site in dist/
 - `src/components/ReadingLesson.jsx`: the syllable-by-syllable reading lesson
 - `src/components/GameScreen.jsx`: game loop (spawning, tapping, celebrating)
 - `src/components/MatchGame.jsx`: the word-to-picture bonus round
+- `src/data/nikud.js`, `src/components/NikudHome.jsx`, `src/components/NikudLesson.jsx`: the nikud lessons
