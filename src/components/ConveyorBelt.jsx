@@ -1,5 +1,6 @@
 import { forwardRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import SyllableWord from './SyllableWord.jsx'
 
 /**
  * The bottom conveyor belt carrying the current word box:
@@ -44,7 +45,7 @@ const ConveyorBelt = forwardRef(function ConveyorBelt({ word, filled, hintPulse,
               >
                 {filled ? (
                   <motion.span initial={{ scale: 0.3 }} animate={{ scale: [1.4, 1] }} transition={{ type: 'spring', bounce: 0.6 }}>
-                    {word.word}
+                    <SyllableWord word={word} />
                   </motion.span>
                 ) : (
                   <motion.span

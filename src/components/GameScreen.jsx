@@ -5,8 +5,10 @@ import { speak, speakAll, stopSpeech } from '../lib/speech.js'
 import { sfx } from '../lib/sfx.js'
 import Bubble, { CHUTES } from './Bubble.jsx'
 import ConveyorBelt from './ConveyorBelt.jsx'
+import SyllableWord from './SyllableWord.jsx'
 import Celebration, { randomCheer } from './Celebration.jsx'
 import MatchGame from './MatchGame.jsx'
+import ReadingLesson from './ReadingLesson.jsx'
 import LevelComplete from './LevelComplete.jsx'
 
 const SPAWN_MS = 1800
@@ -15,7 +17,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 export default function GameScreen({ level, progress, onWordDone, onLevelDone, onNext, onReplay, onExit }) {
   const [wordIndex, setWordIndex] = useState(0)
-  const [phase, setPhase] = useState('play') // play | caught | match | done
+  const [phase, setPhase] = useState('learn') // learn | play | caught | match | done
   const [bubbles, setBubbles] = useState([])
   const [filled, setFilled] = useState(false)
   const [flyer, setFlyer] = useState(null)
@@ -52,15 +54,24 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
     return () => ro.disconnect()
   }, [])
 
-  // Announce each new word
+  // Reset for each new word (the reading lesson opens first)
   useEffect(() => {
     setFilled(false)
     setMistakes(0)
     setBubbles([])
     sinceCorrect.current = 0
-    const t = setTimeout(() => speakAll(['חַפְּשׂוּ אֶת הַמִּלָּה', [word.word, { rate: 0.75 }]]), 700)
-    return () => clearTimeout(t)
   }, [word])
+
+  function lessonDone() {
+    setPhase('play')
+    speakAll(['חַפְּשׂוּ אֶת הַמִּלָּה', [word.word, { rate: 0.75 }]])
+  }
+
+  function openLesson() {
+    if (phase !== 'play') return
+    stopSpeech()
+    setPhase('learn')
+  }
 
   // Bubble factory: keeps dropping word bubbles; the right word shows up often
   useEffect(() => {
@@ -128,7 +139,7 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
     setCheer(null)
     if (wordIndex + 1 < level.words.length) {
       setWordIndex(wordIndex + 1)
-      setPhase('play')
+      setPhase('learn')
     } else {
       setPhase('match')
     }
@@ -142,7 +153,6 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
   }
 
   const sayWord = () => speak(word.word, { rate: 0.75 })
-  const sayHint = () => speakAll(['חַפְּשׂוּ אֶת הַמִּלָּה', [word.word, { rate: 0.7 }]])
 
   return (
     <motion.main
@@ -219,10 +229,10 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
           ))}
 
         <button
-          onClick={sayHint}
+          onClick={openLesson}
           className="absolute bottom-3 left-3 z-20 flex items-center gap-1 rounded-full bg-white/90 px-3 py-2 font-bold text-violet-700 shadow-lg active:scale-95"
         >
-          💡 רֶמֶז
+          📖 אֵיךְ קוֹרְאִים?
         </button>
       </div>
 
@@ -232,7 +242,7 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
         filled={filled}
         hintPulse={hintPulse}
         onSayWord={sayWord}
-        onSlotTap={sayHint}
+        onSlotTap={openLesson}
       />
 
       {/* Bubble flying into the slot */}
@@ -259,13 +269,17 @@ export default function GameScreen({ level, progress, onWordDone, onLevelDone, o
           transition={{ duration: 0.85, ease: 'easeInOut' }}
           onAnimationComplete={landed}
         >
-          {flyer.item.word}
+          <SyllableWord word={flyer.item} />
         </motion.div>
       )}
       {/* Slot not measurable (should not happen) – land immediately */}
       {flyer && !flyer.to && <AutoLand onLand={landed} />}
 
       <AnimatePresence>{cheer && <Celebration key={`cheer-${word.id}`} cheer={cheer} />}</AnimatePresence>
+
+      <AnimatePresence>
+        {phase === 'learn' && <ReadingLesson key={`learn-${word.id}`} word={word} onDone={lessonDone} />}
+      </AnimatePresence>
 
       <AnimatePresence>
         {phase === 'match' && <MatchGame key="match" words={level.words} onDone={matched} />}

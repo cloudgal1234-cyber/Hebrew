@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { shuffle } from '../data/words.js'
 import { speak, speakAll } from '../lib/speech.js'
 import { sfx } from '../lib/sfx.js'
+import SyllableWord from './SyllableWord.jsx'
 
 /**
  * Bonus round after every 3 words: read each word card and match it to its
@@ -124,7 +125,7 @@ export default function MatchGame({ words, onDone }) {
                   selected === w.id ? 'border-amber-400 bg-amber-200 text-indigo-950' : 'border-white bg-violet-600 text-white'
                 }`}
               >
-                {w.word}
+                <SyllableWord word={w} className={selected === w.id ? '' : 'rounded-xl bg-white px-2'} />
               </motion.button>
             )
           })}

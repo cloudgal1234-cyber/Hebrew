@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { animate, motion, useMotionValue } from 'framer-motion'
+import SyllableWord from './SyllableWord.jsx'
 
 export const CHUTES = 3
 const COLORS = [
@@ -70,7 +71,7 @@ export default function Bubble({ bubble, floor, fall, glow, onTap, onGone }) {
           transition={{ duration: 2 + (bubble.id % 3) * 0.4, repeat: Infinity, ease: 'easeInOut' }}
           className="pointer-events-none leading-none"
         >
-          {bubble.item.word}
+          <SyllableWord word={bubble.item} />
         </motion.span>
         {glow && (
           <motion.span
