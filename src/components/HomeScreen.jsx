@@ -6,7 +6,7 @@ import { sfx } from '../lib/sfx.js'
 
 const FLOATERS = ['דָּג', 'סוּס', 'לֵב', 'פִּיל', 'עֵץ', 'נֵר', 'דּוֹב', 'תּוּת']
 
-export default function HomeScreen({ progress, onPlay, onNikud, onReset }) {
+export default function HomeScreen({ progress, onPlay, onNikud, onReading, onReset }) {
   const [voiceMissing, setVoiceMissing] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
 
@@ -92,6 +92,21 @@ export default function HomeScreen({ progress, onPlay, onNikud, onReset }) {
         <span className="flex flex-col items-start">
           <span className="font-heb text-2xl font-black text-indigo-950">לוֹמְדִים נִקּוּד</span>
           <span className="text-sm font-semibold text-indigo-900">קָמָץ, צֵירֵה, חִירִיק, חוֹלָם, שׁוּרוּק…</span>
+        </span>
+      </motion.button>
+
+      <motion.button
+        onClick={() => (sfx.unlock(), sfx.pop(), speak('קוֹרְאִים מִשְׁפָּטִים וְסִפּוּרִים'), onReading())}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.3, type: 'spring', bounce: 0.5 }}
+        whileTap={{ scale: 0.94 }}
+        className="relative z-10 mt-3 flex w-full max-w-md items-center justify-center gap-3 rounded-3xl border-4 border-white bg-gradient-to-l from-sky-300 to-emerald-300 px-5 py-3 shadow-xl"
+      >
+        <span className="text-5xl">📚</span>
+        <span className="flex flex-col items-start">
+          <span className="font-heb text-2xl font-black text-indigo-950">מִשְׁפָּטִים וְסִפּוּרִים</span>
+          <span className="text-sm font-semibold text-indigo-900">קוֹרְאִים סִפּוּרִים קְצָרִים עַד 5 עַמּוּדִים</span>
         </span>
       </motion.button>
 

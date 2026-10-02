@@ -24,7 +24,14 @@ A separate section on the home screen teaches the vowel signs, one lesson per so
 3. **Words:** words from the game whose first syllable has the sign.
 4. **Listening game:** hear a syllable and pick it from 3 bubbles with the same letter and different vowels. 1–3 ⭐.
 
-Progress (stars, points, unlocked levels, completed words, nikud stars) is saved in `localStorage`.
+### Sentences and stories (מִשְׁפָּטִים וְסִפּוּרִים)
+
+A third section on the home screen for reading connected text. Every word can be tapped to hear it, and "🔊 read to me" lights up each word as it is read, then reads the whole text fluently.
+
+- **Sentences:** 6 sets of 5 sentences, from short ones (הַחָתוּל יָשֵׁן.) to long ones. The child reads the sentence, taps "I read it!", then picks the picture that matches it.
+- **Stories:** 8 illustrated stories of 3–5 pages, with page-turn animations and 2–3 comprehension questions at the end.
+
+Progress (stars, points, unlocked levels, completed words, and stars for nikud, sentences and stories) is saved in `localStorage`.
 
 ## Tech
 
@@ -45,3 +52,4 @@ npm run build    # static site in dist/
 - `src/components/GameScreen.jsx`: game loop (spawning, tapping, celebrating)
 - `src/components/MatchGame.jsx`: the word-to-picture bonus round
 - `src/data/nikud.js`, `src/components/NikudHome.jsx`, `src/components/NikudLesson.jsx`: the nikud lessons
+- `src/data/stories.js`: sentence sets and stories (add more here); `ReadingHome.jsx`, `SentenceSet.jsx`, `StoryReader.jsx`, `ReadAloud.jsx`: the reading section
