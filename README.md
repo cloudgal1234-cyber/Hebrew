@@ -28,7 +28,7 @@ A separate section on the home screen teaches the vowel signs, one lesson per so
 
 A third section on the home screen for reading connected text. Every word can be tapped to hear it, and "🔊 read to me" lights up each word as it is read, then reads the whole text fluently.
 
-- **Sentences:** 6 sets of 5 sentences, from short ones (הַחָתוּל יָשֵׁן.) to long ones. The child reads the sentence, taps "I read it!", then picks the picture that matches it.
+- **Chatting with friends (sentences):** 6 animal friends (מִיצִי 🐱, פַּרְפַּרִית 🦋, דֻּבִּי הַשֶּׁף 🐻, פִּילִי 🐘, צִיפִּי 🐦, יַנְשׁוּפִי 🦉), each with its own voice pitch. Each friend chats like a messaging app: it "types", sends 5 sentences as messages (from הַחָתוּל יָשֵׁן. up to long sentences), and the child reads each one and replies with the matching sticker. The friend reacts with ❤️ or 🤔 and answers in the chat, then gives stars at the end.
 - **Stories:** 8 illustrated stories of 3–5 pages, with page-turn animations and 2–3 comprehension questions at the end.
 
 Progress (stars, points, unlocked levels, completed words, and stars for nikud, sentences and stories) is saved in `localStorage`.
@@ -52,4 +52,4 @@ npm run build    # static site in dist/
 - `src/components/GameScreen.jsx`: game loop (spawning, tapping, celebrating)
 - `src/components/MatchGame.jsx`: the word-to-picture bonus round
 - `src/data/nikud.js`, `src/components/NikudHome.jsx`, `src/components/NikudLesson.jsx`: the nikud lessons
-- `src/data/stories.js`: sentence sets and stories (add more here); `ReadingHome.jsx`, `SentenceSet.jsx`, `StoryReader.jsx`, `ReadAloud.jsx`: the reading section
+- `src/data/stories.js`: sentence sets and stories (add more here); `ReadingHome.jsx`, `ChatSet.jsx`, `StoryReader.jsx`, `ReadAloud.jsx`: the reading section

@@ -17,6 +17,8 @@ export function speak(text, { rate = 0.8, pitch = 1.15, interrupt = true } = {})
   return new Promise((resolve) => {
     if (!synth) return resolve()
     if (interrupt) synth.cancel()
+    text = text.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim() // don't read emoji aloud
+    if (!text) return resolve()
     const u = new SpeechSynthesisUtterance(text)
     const voice = hebrewVoice()
     if (voice) u.voice = voice

@@ -8,6 +8,7 @@ const s = (text, pic, ...wrong) => ({ text, pic, wrong })
 export const SENTENCE_SETS = [
   {
     id: 'home', title: 'בַּבַּיִת', emoji: '🏠', color: '#f472b6',
+    friend: { name: 'מִיצִי', avatar: '🐱', pitch: 1.4 },
     sentences: [
       s('הַחָתוּל יָשֵׁן.', '🐱', '🐶', '🐟'),
       s('הַכֶּלֶב רָץ.', '🐶', '🐱', '🐴'),
@@ -18,6 +19,7 @@ export const SENTENCE_SETS = [
   },
   {
     id: 'garden', title: 'בַּגִּנָּה', emoji: '🌷', color: '#4ade80',
+    friend: { name: 'פַּרְפַּרִית', avatar: '🦋', pitch: 1.5, she: true },
     sentences: [
       s('הַפֶּרַח אָדֹם.', '🌹', '🌻', '🌳'),
       s('הַשֶּׁמֶשׁ חַמָּה.', '☀️', '🌙', '☁️'),
@@ -28,6 +30,7 @@ export const SENTENCE_SETS = [
   },
   {
     id: 'food', title: 'אֹכֶל טָעִים', emoji: '🍦', color: '#facc15',
+    friend: { name: 'דֻּבִּי הַשֶּׁף', avatar: '🐻', pitch: 0.9 },
     sentences: [
       s('אֲנִי אוֹהֵב גְּלִידָה.', '🍦', '🍕', '🥕'),
       s('אִמָּא אוֹפָה עוּגָה.', '🎂', '🍞', '🧀'),
@@ -38,6 +41,7 @@ export const SENTENCE_SETS = [
   },
   {
     id: 'animals', title: 'חַיּוֹת', emoji: '🐘', color: '#fb923c',
+    friend: { name: 'פִּילִי', avatar: '🐘', pitch: 0.8 },
     sentences: [
       s('הַפִּיל גָּדוֹל מְאֹד.', '🐘', '🐭', '🐰'),
       s('הָעַכְבָּר קָטָן.', '🐭', '🐘', '🦒'),
@@ -48,6 +52,7 @@ export const SENTENCE_SETS = [
   },
   {
     id: 'outside', title: 'בַּחוּץ', emoji: '🌧️', color: '#38bdf8',
+    friend: { name: 'צִיפִּי', avatar: '🐦', pitch: 1.6, she: true },
     sentences: [
       s('יוֹרֵד גֶּשֶׁם.', '🌧️', '☀️', '❄️'),
       s('הַמָּטוֹס עָף בַּשָּׁמַיִם.', '✈️', '🚗', '🚢'),
@@ -58,6 +63,7 @@ export const SENTENCE_SETS = [
   },
   {
     id: 'long', title: 'מִשְׁפָּטִים אֲרֻכִּים', emoji: '📝', color: '#a78bfa',
+    friend: { name: 'יַנְשׁוּפִי', avatar: '🦉', pitch: 1.0 },
     sentences: [
       s('הַכֶּלֶב שֶׁל דָּנָה אוֹהֵב לְשַׂחֵק בַּכַּדּוּר.', '🐶', '🐱', '🐰'),
       s('בַּבֹּקֶר אֲנִי מְצַחְצֵחַ שִׁנַּיִם.', '🪥', '🛏️', '🍽️'),

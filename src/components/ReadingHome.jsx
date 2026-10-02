@@ -39,12 +39,13 @@ export default function ReadingHome({ progress, onOpen, onBack }) {
         <span className="size-12" />
       </header>
 
-      <h2 className="font-heb mt-6 w-full max-w-3xl text-2xl font-black text-white">📝 מִשְׁפָּטִים</h2>
+      <h2 className="font-heb mt-6 w-full max-w-3xl text-2xl font-black text-white">💬 מְדַבְּרִים עִם חֲבֵרִים</h2>
+      <p className="mt-1 w-full max-w-3xl font-semibold text-white/90">קוֹרְאִים הוֹדָעוֹת מֵחֲבֵרִים וְעוֹנִים לָהֶם</p>
       <section className="mt-3 grid w-full max-w-3xl grid-cols-2 gap-3 sm:grid-cols-3">
         {SENTENCE_SETS.map((set, i) => (
           <motion.button
             key={set.id}
-            onClick={() => open(`set:${set.id}`, set.title)}
+            onClick={() => open(`set:${set.id}`, set.friend.name)}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.05 * i, type: 'spring', bounce: 0.5 }}
@@ -52,8 +53,12 @@ export default function ReadingHome({ progress, onOpen, onBack }) {
             className="flex min-h-32 flex-col items-center justify-between rounded-3xl border-4 border-white/80 p-3 text-center shadow-lg"
             style={{ background: set.color }}
           >
-            <span className="text-5xl">{set.emoji}</span>
-            <span className="font-heb text-lg font-black leading-tight text-indigo-950">{set.title}</span>
+            <span className="relative text-5xl">
+              {set.friend.avatar}
+              <span className="absolute -bottom-1 -end-3 text-2xl">💬</span>
+            </span>
+            <span className="font-heb text-lg font-black leading-tight text-indigo-950">{set.friend.name}</span>
+            <span className="font-heb text-sm font-bold text-indigo-900/80">{set.title}</span>
             <Stars n={progress.sentenceStars?.[set.id] ?? 0} />
           </motion.button>
         ))}

@@ -9,7 +9,7 @@ import NikudHome from './components/NikudHome.jsx'
 import NikudLesson from './components/NikudLesson.jsx'
 import { NIKUD } from './data/nikud.js'
 import ReadingHome from './components/ReadingHome.jsx'
-import SentenceSet from './components/SentenceSet.jsx'
+import ChatSet from './components/ChatSet.jsx'
 import StoryReader from './components/StoryReader.jsx'
 
 export default function App() {
@@ -84,7 +84,7 @@ export default function App() {
         {reading === 'home' ? (
           <ReadingHome key="reading-home" progress={progress} onOpen={openReading} onBack={() => openReading(null)} />
         ) : readKind === 'set' ? (
-          <SentenceSet
+          <ChatSet
             key={reading}
             setId={readId}
             onDone={(stars) => readingDone('set', readId, stars)}

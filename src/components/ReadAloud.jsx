@@ -10,7 +10,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
  * Vowelized text where every word can be tapped to hear it. "Read to me"
  * reads word by word, lighting each one up, then the whole text fluently.
  */
-export default function ReadAloud({ text, className = '', onRead }) {
+export default function ReadAloud({ text, className = '', onRead, compact = false }) {
   const words = useMemo(() => tokens(text), [text])
   const [lit, setLit] = useState(-1)
   const [reading, setReading] = useState(false)
@@ -76,7 +76,9 @@ export default function ReadAloud({ text, className = '', onRead }) {
         type="button"
         onClick={readAll}
         disabled={reading}
-        className="mt-4 rounded-full bg-violet-600 px-5 py-2.5 text-lg font-bold text-white shadow-lg active:scale-95 disabled:opacity-50"
+        className={`rounded-full bg-violet-600 font-bold text-white shadow-lg active:scale-95 disabled:opacity-50 ${
+          compact ? 'mt-2 px-3 py-1 text-sm' : 'mt-4 px-5 py-2.5 text-lg'
+        }`}
       >
         {reading ? '🔊 קוֹרֵא…' : '🔊 תִּקְרָא לִי'}
       </button>
